@@ -1564,6 +1564,12 @@ void Sandbox::onScreenshot(std::string _file) {
             auto pixels = std::unique_ptr<unsigned char[]>(new unsigned char [width * height * 4]);
             glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.get());
 
+            #ifndef ASYNC_RECORDING
+
+            savePixels(_file, pixels.get(), width, height);
+
+            #else
+
             /** Just a small helper that captures all the relevant data to save an image **/
             class Job {
                 std::string m_file_name;
@@ -1605,10 +1611,10 @@ void Sandbox::onScreenshot(std::string _file) {
 
             std::shared_ptr<Job> saverPtr = std::make_shared<Job>(std::move(_file), width, height, std::move(pixels), m_task_count, m_max_mem_in_queue);
             /** In the case that we render faster than we can safe frames, more and more frames
-			 * have to be stored temporary in the save queue. That means that more and more ram is used.
-			 * If to much is memory is used, we save the current frame directly to prevent that the system
-			 * is running out of memory. Otherwise we put the frame in to the thread queue, so that we can utilize
-			 * multilple cpu cores */
+             * have to be stored temporary in the save queue. That means that more and more ram is used.
+             * If to much is memory is used, we save the current frame directly to prevent that the system
+             * is running out of memory. Otherwise we put the frame in to the thread queue, so that we can utilize
+             * multilple cpu cores */
             if (m_max_mem_in_queue <= 0) {
                 Job& saver = *saverPtr;
                 saver();
@@ -1621,6 +1627,8 @@ void Sandbox::onScreenshot(std::string _file) {
                 };
                 m_save_threads.Submit(std::move(func));
             }
+
+            #endif
         }
     
         if (!m_record) {
