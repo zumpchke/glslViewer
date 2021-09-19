@@ -41,7 +41,7 @@ endif
 $(info ${PLATFORM} platform with $(DRIVER) drivers)
 
 INCLUDES +=	-Isrc/ -Iinclude/
-CFLAGS += -Wall -O3 -std=c++11 -fpermissive
+CFLAGS += -Wall -O0 -std=c++11 -fpermissive
 
 ifeq ($(PLATFORM), RPI)
 	CFLAGS += -DPLATFORM_RPI -Wno-psabi 
