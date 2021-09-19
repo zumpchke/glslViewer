@@ -19,7 +19,7 @@ public:
     virtual bool    update();
     virtual void    clear();
     const int	    get_buf_len() { return m_buf_len; }
-    std::vector<uint8_t> *get_buffer() { return &m_buffer_re; }
+    std::vector<uint8_t> *get_buffer() { return &m_buffer_wr; }
     ma_pcm_rb 	*get_ring_buffer() { return &ring_buffer; }
 
 private:

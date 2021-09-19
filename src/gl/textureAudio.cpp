@@ -39,9 +39,6 @@ void data_collect_callback_fixed(ma_device* pDevice, void* pOutput, const void* 
     (void)pOutput;
     assert(frameCount == 1024);
     std::lock_guard<std::mutex> lock(mtx);
-    for(auto i = 0; i < frameCount; i++) {
-        printf("%d\n", m_buffer_wr[i]);
-    }
     memcpy(m_buffer_wr, pInput, frameCount);
 }
 
@@ -71,7 +68,7 @@ void data_collect_callback(ma_device* pDevice, void* pOutput, const void* pInput
             ma_pcm_rb_commit_write(ring_buffer, to_write, pWriteBuffer);
 
             frames_processed += to_write;
-            runningInput += to_write;
+            running_input += to_write;
 
         } else {
             // ring buffer is full now. fire fixed callback
